@@ -1,6 +1,8 @@
 # factl
 
-Bla bla bla.
+`factl` is the CSU Fullerton Algorithm Competition Template Library.
+
+**Note**: This repository is not officially affiliated with CSU Fullerton.
 
 ## Contribution
 
