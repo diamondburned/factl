@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+export TMP="${TMP:-/tmp}"
+mkdir -p $TMP/factl
+mkdir -p $TMP/factl/.builds
+trap "rm -r $TMP/factl/.builds" EXIT
+
+# testing::fns "$filename"
+testing::fns() {
+	sed -n 's/^static void \(\(example_\|test_\)\{0,1\}.*\)().*/\1/p' "$filename"
+}
+
+# testing::fileID "$filename" "$fn"
+testing::fileID() {
+	sha1sum <<< "$filename/$fn" | head -c6
+}
+
+# testing::run "$filename" "$fn"
+testing::run() {
+	local filename="$1"
+	local fn="$2"
+
+	out=$(mktemp -d "$TMP/factl/.builds/XXXXXX")
+
+	$CXX $CXXFLAGS \
+		-I./$(dirname "$filename") -x c++ -O0 -o "$out/main.out" - <<EOF
+$(cat "$filename")
+
+int main() {
+	$fn();
+	return 0;
+}
+EOF
+	
+	"$out/main.out" || return 1
+}

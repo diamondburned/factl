@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -e
+
+. tools/lib/testing
+
+main() {
+	while read filename; do
+		doTest "$filename"
+	done < <(find . -name '*.cpp' -or -name '*.hpp')
+}
+
+doTest() {
+	fns=( $(testing::fns "$filename") )
+	if (( ${#fns[@]} == 0 )); then
+		return
+	fi
+
+	fileID=$(sha1sum <<< "$filename/$fn" | head -c6)
+
+	newFileHash=$(sha1sum "$filename" | cut -d' ' -f1)
+	oldFileHash=$(cat "$TMP/factl/$fileID.sha1" 2> /dev/null || true)
+	if [[ "$newFileHash" == "$oldFileHash" ]]; then
+		echo "Skipped \"$filename\"" >&2
+		return
+	fi
+
+	echo "Testing \"$filename\"" >&2
+
+	for fn in "${fns[@]}"; do
+		outfile="$TMP/factl/$fileID.out"
+		echo "  Running $fn() > $outfile" >&2
+
+		if testing::run "$filename" "$fn" &> "$outfile"; then
+			echo "    PASSED" >&2
+		else
+			echo "    FAILED" >&2
+			return 1
+		fi
+	done
+
+	echo -n "$newFileHash" > "$TMP/factl/$fileID.sha1"
+}
+
+main "$@"
