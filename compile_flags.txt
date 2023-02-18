@@ -1,0 +1,5 @@
+-g
+-O1
+-std=c++17
+-stdlib=libstdc++
+-I./pages
