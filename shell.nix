@@ -29,4 +29,10 @@ in pkgs.mkShell {
 		clangd
 		clang
 	];
+
+	shellHook = ''
+		export TOOLS_DIR = "${builtins.toString ./tools}";
+		export PROJECT_DIR=${builtins.toString ./.}
+		export CXXFLAGS="$(cat compile_flags.txt)"
+	'';
 }

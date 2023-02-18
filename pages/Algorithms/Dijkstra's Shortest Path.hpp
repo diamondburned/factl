@@ -2,8 +2,6 @@
 // priority_queue in STL
 #include <Template.hpp>
 
-// This class represents a directed graph using
-// adjacency list representation
 class Graph {
   int V;
   vector<list<pii>> adj;
