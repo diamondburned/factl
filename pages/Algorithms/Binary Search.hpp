@@ -2,14 +2,13 @@
 // callback to compare the index to the value you're looking for. It returns the
 // index of the value you're looking for, or length if it doesn't exist.
 #include <Template.hpp>
+#include <functional>
 
-// This algorithm was taken from the Go standard library.
-
-int binarySearch(int len, function<bool(int)> compare) {
-  int i = 0, j = len;
+int binarySearch(const vector<int> &vec, function<bool(const int &v)> compare) {
+  int i = 0, j = sz(vec);
   while (i < j) {
     int h = int(uint(i + j) >> 1);
-    if (!compare(h)) {
+    if (!compare(vec[h])) {
       i = h + 1;
     } else {
       j = h;
@@ -18,8 +17,10 @@ int binarySearch(int len, function<bool(int)> compare) {
   return i;
 }
 
+// This algorithm was adapted from the Go standard library.
+
 static void test_binarySearch() {
   vi vin = {1, 2, 3, 4, 5};
-  assert(binarySearch(vin.size(), [&](int i) { return vin[i] >= 3; }) == 2);
-  assert(binarySearch(vin.size(), [&](int i) { return vin[i] >= 6; }) == 5);
+  assert(binarySearch(vin, [](int v) { return v >= 3; }) == 2);
+  assert(binarySearch(vin, [](int v) { return v >= 6; }) == 5);
 }
