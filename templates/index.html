@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<title>factl</title>
+{{ template "components/head.html" }}
+
+<body class="letter">
+	<header>
+		<h1>factl</h1>
+		<section id="toc">
+			<h2>Table of Contents</h2>
+			{{ template "components/toc.html" .pages }}
+		</section>
+	</header>
+	<main>
+		{{ range .pages }}
+			{{ if (index . "pages") }}
+			<section id="{{ .slug }}" class="cover-page">
+				<h2>{{ .title }}</h2>
+				{{ range .pages }}
+					{{ template "article" . }}
+				{{ end }}
+			</section>
+			{{ else }}
+				{{ template "article" . }}
+			{{ end }}
+		{{ end }}
+	</main>
+</body>
+
+{{ define "article" }}
+	<article id="{{ .slug }}">
+		<h3>{{ .title }}</h3>
+		{{ with .content }}
+			<div class="content">
+				{{ if index . "html" }}
+					{{ tmpl.Inline .html }}
+				{{ end }}
+				{{ if index . "md" }}
+					{{ md .md | tmpl.Inline }}
+				{{ end }}
+				{{ with index . "cpp" }}
+					{{ md .comment | tmpl.Inline }}
+					{{ if .impl }}
+						{{ hl "cpp" .impl }}
+						{{ if .example }}
+							<aside>
+								<h5>Example</h5>
+								{{ hl "cpp" .example }}
+							</aside>
+						{{ end }}
+					{{ else if .example }}
+						{{ hl "cpp" .example }}
+					{{ end }}
+				{{ end }}
+			</div>
+		{{ end }}
+	</article>
+{{ end }}

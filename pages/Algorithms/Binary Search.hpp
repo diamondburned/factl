@@ -1,8 +1,9 @@
 // A simple binary search algorithm. Give it the length of the array and a
 // callback to compare the index to the value you're looking for. It returns the
 // index of the value you're looking for, or length if it doesn't exist.
+//
+// This algorithm was adapted from the Go standard library.
 #include <Template.hpp>
-#include <functional>
 
 int binarySearch(const vector<int> &vec, function<bool(const int &v)> compare) {
   int i = 0, j = sz(vec);
@@ -16,8 +17,6 @@ int binarySearch(const vector<int> &vec, function<bool(const int &v)> compare) {
   }
   return i;
 }
-
-// This algorithm was adapted from the Go standard library.
 
 static void test_binarySearch() {
   vi vin = {1, 2, 3, 4, 5};

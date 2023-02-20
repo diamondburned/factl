@@ -1,8 +1,7 @@
-// Lookup table version of the factorial function.
+// Lookup table version of the factorial function. Taken from
+// https://en.wikipedia.org/wiki/Factorial.
 #include <Template.hpp>
 
-// factorials is a factorial lookup table. Taken from
-// https://en.wikipedia.org/wiki/Factorial.
 static std::vector<int64_t> factorials = {
     1,                   // 0!
     1,                   // 1!

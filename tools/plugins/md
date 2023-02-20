@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+echo "$1" | cmark-gfm ${CMARK_FLAGS:-} \
+	--nobreaks --smart \
+	--extension table \
+	--extension autolink \
+	--extension tagfilter \
+	--extension tasklist \
+	--extension strikethrough \
+	--extension footnotes

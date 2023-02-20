@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+main() {
+	file="$1"
+
+	# Extract sections of the file.
+	comments=""
+	code=""
+
+	while IFS= read -rs line; do
+		if [[ "$line" == "//"* && "$code" == "" ]]; then
+			comments+="${line#//}"$'\n'
+			continue
+		fi
+
+		if [[ "$line" == "#include <Template.hpp>" ]]; then
+			# ignore
+			continue
+		fi
+
+		code+="$line"$'\n'
+	done < "$file"
+
+	comment="$(trim "$comments")"
+
+	codeExample="$(echo "$code" | grep -Pzo 'static void .* {[\s\S]*}' | tr -d '\0')"
+	codeExample="$(trim "$codeExample")"
+
+	codeImpl="${code//"$codeExample"/}"
+	codeImpl="$(trim "$codeImpl")"
+
+	codeExample="$(echo "$codeExample" | sed -e '$d' -e '1d' -e 's/^  //g')"
+
+	jq --null-input \
+		--arg comment "$comment" \
+		--arg impl    "$codeImpl" \
+		--arg example "$codeExample" \
+		'{ $comment, $impl, $example }'
+}
+
+trim() {
+	l="$1"
+	l="${l%$'\n'}"
+	l="${l#$'\n'}"
+	# l="${l//$'\n\n'/$'\n'}"
+	echo "$l"
+}
+
+main "$@"

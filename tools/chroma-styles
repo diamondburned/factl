@@ -1,0 +1,2 @@
+#!/bin/sh
+chroma --html-styles --style=bw < /dev/null

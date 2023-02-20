@@ -20,8 +20,16 @@ let lib = pkgs.lib;
 	    ${clang-unwrapped}/bin/clangd
 	'';
 
+	serve = pkgs.writeShellScriptBin
+		"serve"
+		"cd output && ${pkgs.python3}/bin/python3 -m http.server";
+
 in pkgs.mkShell {
 	buildInputs = with pkgs; [
+		serve
+		cmark-gfm
+		chroma
+		perl
 		gomplate
 		gcc
 		gdb

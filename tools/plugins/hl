@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "$2" | chroma --filename="in.$1" --html --html-only

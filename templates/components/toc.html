@@ -1,0 +1,12 @@
+{{ block "toc" . }}
+<ul>
+	{{ range . }}
+	<li>
+		<a href="#{{ .slug }}">{{ .title }}</a>
+		{{ with (index . "pages") }}
+		{{ template "toc" . }}
+		{{ end }}
+	</li>
+	{{ end }}
+</ul>
+{{ end }}

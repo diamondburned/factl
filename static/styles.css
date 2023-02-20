@@ -1,0 +1,94 @@
+body {
+	/* column-count: 2; */
+	line-height: 1.35;
+	font-family: "Source Serif Pro", serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Lato", sans-serif;
+}
+
+h1 {
+	font-size: 2.5em;
+	text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+	margin: 1em 0;
+}
+
+pre, code {
+	font-family: "Inconsolata", monospace;
+	font-weight: 500;
+}
+
+code span[style*="font-weight:bold"] {
+	font-weight: 800 !important;
+}
+
+ul {
+	margin: 0.25em 0;
+}
+
+li {
+	margin-bottom: 0.25em;
+}
+
+#toc ul:not(ul ul) {
+	padding-right: 1.4em;
+}
+
+#toc li a::after {
+	content: attr(data-page);
+	float: right;
+}
+
+#toc li a {
+	width: 100%;
+	display: block;
+	border-bottom: 1px dashed #ccc;
+}
+
+#toc li::marker {
+	content: "";
+}
+
+header,
+article,
+section.cover-page {
+	margin: 2em auto;
+	break-after: page;
+	counter-increment: page;
+}
+
+@media print {
+	section.cover-page > h1:first-child,
+	section.cover-page > h2:first-child,
+	section.cover-page > h3:first-child {
+		width: 100%;
+		height: 100vh;
+		font-size: 2em;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text-align: center;
+	}
+
+	header::before,
+	article::before,
+	section.cover-page::before {
+		content: "Page " counter(page);
+		float: right;
+	}
+}
+
+pre {
+	background: none;
+	border-left: 2px solid #ccc;
+}
+
+pre code,
+pre code.hljs {
+	padding: 0;
+	background: none;
+}

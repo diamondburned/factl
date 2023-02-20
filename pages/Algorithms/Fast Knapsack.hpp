@@ -1,11 +1,15 @@
 // This function solves the 0-1 Knapsack problem in O(nW) time, where n is the
 // number of items and W is the maximum weight.
-#include <Template.hpp>
-
+//
+// Parameters:
+//
 // - val[] is for storing maximum profit for each weight
 // - wt[] is for storing weights
 // - n is number of item
 // - W is maximum capacity of bag
+//
+#include <Template.hpp>
+
 int knapsack(vector<int> val, vector<int> wt, int n, int W) {
   vector<int> dp(W + 1);
   for (int i = 0; i < n; i++)

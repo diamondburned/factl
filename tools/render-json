@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+main() {
+	jq '{ pages: . }' < <(makePages "pages")
+}
+
+pathJSON() {
+	local f="$1"
+	jq --null-input \
+		--arg path "$f" \
+		--arg slug "$(tools/slugify "$f")" \
+		--arg title "$(basename "${f%.*}")" \
+		'{ $path, $slug, $title }'
+}
+
+makePage() {
+	local content=""
+
+	case "$1" in
+	*.htm|*.html)
+		html=$(cat "$1")
+		content=$(jq --null-input --arg html "$html" '{ $html }')
+		;;
+	*.md)
+		md=$(cat "$1")
+		content=$(jq --null-input --arg md "$md" '{ $md }')
+		;;
+	*.hpp|*.cpp|*.c|*.h)
+		cpp=$(tools/render-cpp "$1")
+		content=$(jq '{ cpp: . }' <<< "$cpp")
+		;;
+	*)
+		echo "unknown file extension: $ext" >&2
+		return 1
+		;;
+	esac
+
+	jq '{ content: . }' <<< "$content"
+}
+
+makePages() {
+	files=()
+	# Ensure that files are added before directories.
+	for f in "$1"/*; do if [[ -f "$f" ]]; then files+=("$f"); fi; done
+	for d in "$1"/*; do if [[ -d "$d" ]]; then files+=("$d"); fi; done
+
+	objs=()
+	for f in "${files[@]}"; do
+		obj=$(pathJSON "$f")
+
+		if [[ -d "$f" ]]; then
+			pages=$(makePages "$f")
+			obj=$(jq --argjson pages "$pages" '. + { $pages }' <<< "$obj")
+		else
+			page=$(makePage "$f")
+			obj=$(jq --argjson page "$page" '. + $page' <<< "$obj")
+		fi
+
+		objs+=( "$obj" )
+	done
+
+	jq -s <<< "${objs[@]}"
+}
+
+main "$@"

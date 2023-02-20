@@ -1,0 +1,18 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p chromium python3
+set -euo pipefail
+
+if [[ ! -d output/ ]]; then
+	echo "Error: output/ not found (run ./tools/build first)"
+	exit 1
+fi
+cd output/
+
+python3 -m http.server 18474 &
+serverPID=$!
+trap "kill $serverPID" EXIT
+
+chromium \
+	--headless --disable-gpu \
+	--print-to-pdf-no-header --print-to-pdf=factl.pdf \
+	http://localhost:18474

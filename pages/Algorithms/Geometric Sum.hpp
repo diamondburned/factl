@@ -1,9 +1,13 @@
 // Find the sum of the geometric series.
-#include <Template.hpp>
-
+//
+// Parameters:
+//
 // - a: first term
 // - r: common ratio
 // - n: number of terms
+//
+#include <Template.hpp>
+
 double geosum(double a, double r, int n) {
   if (r == 1)
     return a * n;

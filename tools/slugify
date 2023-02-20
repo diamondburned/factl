@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+name="$(basename "$1")"
+name="${name%.*}"
+name="${name,,}"
+name="${name// /-}"
+name="${name//[^a-z0-9-_]/}"
+echo "$name"

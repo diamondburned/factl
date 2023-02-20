@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+gomplateFlags=(
+	${GOMPLATE_FLAGS:-}
+	--template "components=./templates/components"
+)
+
+init() {
+	for plugin in tools/plugins/*; do
+		gomplateFlags+=(--plugin "$(basename "$plugin")=$plugin")
+	done
+}
+
+main() {
+	if [[ -d output ]]; then
+		rm -r output/*
+	fi
+
+	mkdir -p output
+	ln -s ../static output/static
+
+	tools/render-json > output/pages.json
+	echo "rendered output/pages.json"
+
+	gomplate "${gomplateFlags[@]}" \
+		-o "output/index.html" \
+		-f "templates/index.html" \
+		-c ".=file://$(realpath output/pages.json)"
+	echo "rendered output/index.html"
+}
+
+init
+main "$@"
