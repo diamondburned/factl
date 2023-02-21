@@ -64,16 +64,16 @@ li {
 		max-width: 100%;
 	}
 
-	header,
 	article,
 	section.cover-page {
 		break-after: page;
-		counter-increment: page;
+		page-break-after: always;
 	}
 
-	article * {
-		break-before: avoid;
-		break-after: avoid;
+	header,
+	article,
+	section.cover-page {
+		counter-increment: page;
 	}
 
 	section.cover-page > h1:first-child,
@@ -88,10 +88,9 @@ li {
 		text-align: center;
 	}
 
-	header::before,
 	article::before,
 	section.cover-page::before {
-		content: "Page " counter(page);
+		content: counter(page);
 		float: right;
 	}
 }

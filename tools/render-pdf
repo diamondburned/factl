@@ -16,6 +16,9 @@ main() {
 	trap "kill $serverPID" EXIT
 	
 	sleep 0.5
+
+	export DISPLAY=
+	export WAYLAND_DISPLAY=
 	
 	chromium \
 		--headless --disable-gpu \
