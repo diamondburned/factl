@@ -6,6 +6,18 @@ on:
 
 jobs:
   test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Nix shell
+        uses: diamondburned/cache-install@d35fbc312958f4c121770767d74a3b49fbe0f280
+
+      - name: Run tests
+        run: ./tools/test-all
+
+  build:
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +34,15 @@ jobs:
         with:
           name: output
           path: output
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: output
 
       - name: Update Nightly release
         uses: andelf/nightly-release@ce2d0a30db8cf9f3920a4237d6a0b874400710c1
