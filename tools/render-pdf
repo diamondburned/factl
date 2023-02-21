@@ -19,6 +19,7 @@ main() {
 	
 	chromium \
 		--headless --disable-gpu \
+		--run-all-compositor-stages-before-draw \
 		--print-to-pdf-no-header --print-to-pdf=factl.pdf \
 		http://localhost:18474
 }
