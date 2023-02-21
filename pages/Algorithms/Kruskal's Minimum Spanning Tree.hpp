@@ -1,39 +1,34 @@
+// This file implements the Kruskal's Minimum Spanning Tree algorithm. It is
+// used to find the minimum spanning tree of an undirected weighted graph.
+//
+// Taken from
+// https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-using-stl-in-c/.
 #include <Template.hpp>
 
-// To represent Disjoint Sets
 struct DisjointSets {
   vi p, r; // parent, rank
   int n;
 
-  // Constructor.
-  DisjointSets(int n_) : n(n_), p(vi(n_)), r(vi(n_, 0)) {
-    // Initially, all vertices are in different sets and have rank 0.
+  DisjointSets(int n) : n(n), p(vi(n)), r(vi(n, 0)) {
     for (int i = 0; i <= n; i++) {
       p[i] = i; // every element is parent of itself
     }
   }
 
-  // Find the parent of a node 'u'
-  // Path Compression
   int find(int u) {
-    // Make the parent of the nodes in the path from u--> parent[u] point to
-    // parent[u]
     if (u != p[u]) {
       p[u] = find(p[u]);
     }
     return p[u];
   }
 
-  // Union by rank
   void merge(int x, int y) {
     x = find(x);
     y = find(y);
 
-    /* Make tree with smaller height
-    a subtree of the other tree */
     if (r[x] > r[y]) {
       p[y] = x;
-    } else { // If rnk[x] <= rnk[y]
+    } else {
       p[x] = y;
     }
 
@@ -52,14 +47,15 @@ struct Graph {
 
   void addEdge(int u, int v, int w) { edges.push_back({w, {u, v}}); }
 
-  // kruskalMST returns the weight of the MST.
-  int kruskalMST() {
-    int mst_wt = 0;
-
-    sort(all(edges));
+  // kruskalMST returns the weight and edges of the MST.
+  pair<int, vector<pii>>
+  kruskalMST(function<void(int u, int v, int w)> walk = nullptr) {
+    int mstWeight = 0;
+    vector<pii> mstEdges;
 
     DisjointSets ds(V);
 
+    sort(all(edges));
     for (auto [w, uv] : edges) {
       int u = uv.first;
       int v = uv.second;
@@ -67,22 +63,30 @@ struct Graph {
       int set_u = ds.find(u);
       int set_v = ds.find(v);
 
-      // prevent cycle
-      if (set_u != set_v) {
-        // u -> v with weight w, add code if needed
-        mst_wt += w;
-        ds.merge(set_u, set_v);
+      if (set_u == set_v) {
+        continue; // prevent cycles
+      }
+
+      if (walk) {
+        walk(u, v, w);
+      }
+
+      mstWeight += w;
+      mstEdges.push_back({u, v});
+      ds.merge(set_u, set_v);
+
+      if (mstEdges.size() == V - 1) {
+        break;
       }
     }
 
-    return mst_wt;
+    return {mstWeight, mstEdges};
   };
 };
 
-// https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-using-stl-in-c/
-
 static void example_Kruskal_MST() {
   Graph g(9, 14);
+
   g.addEdge(0, 1, 4);
   g.addEdge(0, 7, 8);
   g.addEdge(1, 2, 8);
@@ -97,5 +101,17 @@ static void example_Kruskal_MST() {
   g.addEdge(6, 7, 1);
   g.addEdge(6, 8, 6);
   g.addEdge(7, 8, 7);
-  assert(g.kruskalMST() == 37);
+
+  auto [weight, edges] = g.kruskalMST();
+  assert(weight == 37);
+  assert(edges == (vector<pii>{
+                      {6, 7},
+                      {2, 8},
+                      {5, 6},
+                      {0, 1},
+                      {2, 5},
+                      {2, 3},
+                      {0, 7},
+                      {3, 4},
+                  }));
 }
