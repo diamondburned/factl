@@ -13,6 +13,8 @@ jobs:
 
       - name: Install Nix shell
         uses: diamondburned/cache-install@d35fbc312958f4c121770767d74a3b49fbe0f280
+        with:
+          nix-path: nixpkgs=channel:nixos-22.11
 
       - name: Run tests
         run: ./tools/test-all -v
@@ -25,6 +27,8 @@ jobs:
 
       - name: Install Nix shell
         uses: diamondburned/cache-install@d35fbc312958f4c121770767d74a3b49fbe0f280
+        with:
+          nix-path: nixpkgs=channel:nixos-22.11
 
       - name: Build
         run: ./tools/build
