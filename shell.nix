@@ -40,9 +40,11 @@ in pkgs.mkShell {
 		clang
 	];
 
-	shellHook = ''
-		export TOOLS_DIR = "${builtins.toString ./tools}";
-		export PROJECT_DIR=${builtins.toString ./.}
-		export CXXFLAGS="$(cat compile_flags.txt)"
-	'';
+	TOOLS_DIR = "${builtins.toString ./tools}";
+	PROJECT_DIR = "${builtins.toString ./.}";
+
+	CXXFLAGS =
+		lib.concatStringsSep " "
+			(lib.splitString "\n"
+				(builtins.readFile ./compile_flags.txt));
 }
