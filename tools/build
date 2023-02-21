@@ -28,6 +28,9 @@ main() {
 		-f "templates/index.html" \
 		-c ".=file://$(realpath output/pages.json)"
 	echo "rendered output/index.html"
+
+	tools/render-pdf
+	echo "rendered output/factl.pdf"
 }
 
 init
