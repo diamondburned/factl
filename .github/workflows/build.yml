@@ -43,6 +43,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: output
+          path: output
 
       - name: Update Nightly release
         uses: andelf/nightly-release@ce2d0a30db8cf9f3920a4237d6a0b874400710c1
