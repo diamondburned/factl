@@ -1,4 +1,4 @@
 -g
 -O1
--std=c++17
+-std=gnu++20
 -I./pages
