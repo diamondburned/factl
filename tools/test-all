@@ -3,7 +3,16 @@ set -e
 
 . tools/lib/testing
 
+verbose=false
+
 main() {
+	case "$1" in
+	-v|--verbose)
+		verbose=true
+		shift
+		;;
+	esac
+
 	while read filename; do
 		doTest "$filename"
 	done < <(find . -name '*.cpp' -or -name '*.hpp')
@@ -27,7 +36,12 @@ doTest() {
 	echo "Testing \"$filename\"" >&2
 
 	for fn in "${fns[@]}"; do
-		outfile="$TMP/factl/$fileID.out"
+		if [[ "$verbose" == true ]]; then
+			outfile=/dev/stderr
+		else
+			outfile="$TMP/factl/$fileID.out"
+		fi
+
 		echo "  Running $fn() > $outfile" >&2
 
 		if testing::run "$filename" "$fn" &> "$outfile"; then

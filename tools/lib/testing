@@ -23,7 +23,7 @@ testing::run() {
 	out=$(mktemp -d "$TMP/factl/.builds/XXXXXX")
 
 	$CXX $CXXFLAGS \
-		-I./$(dirname "$filename") -x c++ -O0 -o "$out/main.out" - <<EOF
+		-I./$(dirname "$filename") -x c++ -O1 -o "$out/main.out" - <<EOF
 $(cat "$filename")
 
 int main() {

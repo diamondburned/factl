@@ -15,7 +15,7 @@ jobs:
         uses: diamondburned/cache-install@d35fbc312958f4c121770767d74a3b49fbe0f280
 
       - name: Run tests
-        run: ./tools/test-all
+        run: ./tools/test-all -v
 
   build:
     name: Build
