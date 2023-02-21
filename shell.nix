@@ -26,9 +26,11 @@ let lib = pkgs.lib;
 
 in pkgs.mkShell {
 	buildInputs = with pkgs; [
+		python3
 		serve
 		cmark-gfm
 		chroma
+		chromium
 		perl
 		gomplate
 		gcc

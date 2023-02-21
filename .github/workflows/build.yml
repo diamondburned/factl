@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Nix shell
+        uses: diamondburned/cache-install@d35fbc312958f4c121770767d74a3b49fbe0f280
+
+      - name: Build
+        run: ./tools/build
+
+      - name: Upload output
+        uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: output
+
+      - name: Update Nightly release
+        uses: andelf/nightly-release@ce2d0a30db8cf9f3920a4237d6a0b874400710c1
+        with:
+          name: Nightly Release
+          tag_name: nightly
+          prerelease: true
+          files: output/factl.pdf
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

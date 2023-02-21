@@ -1,20 +1,33 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash -p chromium python3
+#!/usr/bin/env bash
 set -euo pipefail
 
-if [[ ! -d output/ ]]; then
-	echo "Error: output/ not found (run ./tools/build first)"
-	exit 1
-fi
-cd output/
+main() {
+	require chromium
+	require python3
 
-python3 -m http.server 18474 &
-serverPID=$!
-trap "kill $serverPID" EXIT
+	if [[ ! -d output/ ]]; then
+		echo "Error: output/ not found (run ./tools/build first)"
+		exit 1
+	fi
+	cd output/
+	
+	python3 -m http.server 18474 &
+	serverPID=$!
+	trap "kill $serverPID" EXIT
+	
+	sleep 0.5
+	
+	chromium \
+		--headless --disable-gpu \
+		--print-to-pdf-no-header --print-to-pdf=factl.pdf \
+		http://localhost:18474
+}
 
-sleep 0.5
+require() {
+	if ! command -v "$1" >/dev/null; then
+		echo "Error: $1 not found"
+		exit 1
+	fi
+}
 
-chromium \
-	--headless --disable-gpu \
-	--print-to-pdf-no-header --print-to-pdf=factl.pdf \
-	http://localhost:18474
+main "$@"
