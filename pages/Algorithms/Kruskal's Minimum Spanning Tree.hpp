@@ -5,38 +5,7 @@
 // https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-using-stl-in-c/.
 #include <Template.hpp>
 
-struct DisjointSets {
-  vi p, r; // parent, rank
-  int n;
-
-  DisjointSets(int n) : n(n), p(vi(n)), r(vi(n, 0)) {
-    for (int i = 0; i <= n; i++) {
-      p[i] = i; // every element is parent of itself
-    }
-  }
-
-  int find(int u) {
-    if (u != p[u]) {
-      p[u] = find(p[u]);
-    }
-    return p[u];
-  }
-
-  void merge(int x, int y) {
-    x = find(x);
-    y = find(y);
-
-    if (r[x] > r[y]) {
-      p[y] = x;
-    } else {
-      p[x] = y;
-    }
-
-    if (r[x] == r[y]) {
-      r[y]++;
-    }
-  }
-};
+#include "Union Find.hpp"
 
 // Structure to represent a graph
 struct Graph {
@@ -53,15 +22,15 @@ struct Graph {
     int mstWeight = 0;
     vector<pii> mstEdges;
 
-    DisjointSets ds(V);
+    UnionFind un(V);
 
     sort(all(edges));
     for (auto [w, uv] : edges) {
       int u = uv.first;
       int v = uv.second;
 
-      int set_u = ds.find(u);
-      int set_v = ds.find(v);
+      int set_u = un.find(u);
+      int set_v = un.find(v);
 
       if (set_u == set_v) {
         continue; // prevent cycles
@@ -73,7 +42,7 @@ struct Graph {
 
       mstWeight += w;
       mstEdges.push_back({u, v});
-      ds.merge(set_u, set_v);
+      un.merge(set_u, set_v);
 
       if (mstEdges.size() == V - 1) {
         break;
